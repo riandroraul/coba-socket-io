@@ -19,7 +19,9 @@
       integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
       crossorigin="anonymous"
     ></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+      const socket = io();
       const pesanUser = document.getElementById("pesanUser");
       const cardBody = document.getElementById("cardBody");
       join.addEventListener("click", (e) => {
@@ -30,9 +32,32 @@
 
       kirimPesan.addEventListener("click", (e) => {
         const p = document.createElement("p");
-        p.textContent = pesanUser.value;
-        cardBody.appendChild(p);
-        pesanUser.value = "";
+        if (pesanUser.value) {
+          socket.emit("message", pesanUser.value);
+          p.textContent = pesanUser.value;
+          p.style.display = "inline-block";
+          p.style.borderRadius = "10px";
+          p.style.width = "100%";
+          p.style.color = "white";
+          p.style.padding = "5px";
+          p.style.backgroundColor = "lightskyblue";
+          cardBody.appendChild(p);
+          pesanUser.value = "";
+        }
+      });
+
+      socket.on("message", (data) => {
+        console.log(data);
+        const broadcast = document.createElement("p");
+        broadcast.textContent = data;
+        broadcast.style.textAlign = "right";
+        broadcast.style.display = "inline-block";
+        broadcast.style.borderRadius = "10px";
+        broadcast.style.width = "100%";
+        broadcast.style.color = "white";
+        broadcast.style.padding = "5px";
+        broadcast.style.backgroundColor = "lightgreen";
+        cardBody.appendChild(broadcast);
       });
     </script>
   </body>
